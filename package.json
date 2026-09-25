@@ -1,0 +1,17 @@
+{
+  "name": "midnight-reminder",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A Pi extension that reminds the user at midnight.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest --run --passWithNoTests"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "^0.87.1",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.0.0"
+  }
+}
