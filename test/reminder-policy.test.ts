@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { shouldRemind } from "../src/reminder-policy";
+import { shouldRemind } from "../src/reminder-policy.js";
 
 describe("shouldRemind", () => {
   it("does not remind at 23:59", () => {
