@@ -4,8 +4,8 @@ A Pi extension that reminds the user, at most once per local calendar date, when
 their session is running during the late-night window. The user is always free
 to keep working; the reminder is advisory and non-blocking.
 
-This document is the **W1-1 specification**. It defines required behavior only.
-Implementation and tests are intentionally deferred to later work items.
+This document contains the original W1-1 specification together with the
+implementation, testing, and usage instructions completed in later work items.
 
 ---
 
@@ -136,3 +136,120 @@ checks. To keep tests fast and deterministic:
 | 16 | The extension does not wake a sleeping computer and does not run while Pi is closed. | R17 |
 | 17 | If execution resumes after 06:00, skip the missed reminder. | R3 |
 | 18 | Testing must use simulated/supplied time; do not change the system clock or wait until actual midnight. | R18 |
+
+---
+
+## 8. Implementation
+
+The extension is implemented as three small pieces:
+
+- `src/reminder-policy.ts` contains the pure time-window and once-per-date policy.
+- `src/reminder-session.ts` manages session state, the 30-second periodic check,
+  automatic reminders, and timer cleanup.
+- `src/index.ts` integrates the reminder with Pi, registers `/bedtime-test`, starts
+  automatic checking for interactive TUI sessions, and stops the timer on session
+  shutdown.
+
+The extension checks the current local time immediately when an interactive Pi
+session starts and then every 30 seconds. This guarantees that, while Pi remains
+open and the computer is awake, a check occurs within one minute after midnight.
+
+Automatic reminder state is kept in memory for the current extension session.
+Therefore, repeated checks on the same local calendar date do not produce
+duplicate automatic reminders. A fresh extension session or reload may remind
+again, as allowed by the specification.
+
+## 9. Installation
+
+Install the project dependencies:
+
+```bash
+npm install
+```
+
+## 10. Running the Extension
+
+Launch Pi with only this extension:
+
+```bash
+pi --extension ./src/index.ts
+```
+
+In an interactive Pi session, manually preview the reminder with:
+
+```text
+/bedtime-test
+```
+
+The preview displays:
+
+```text
+It is after midnight. Consider saving your work and getting some sleep.
+```
+
+The manual preview does not modify the automatic reminder state.
+
+### Automatic behavior
+
+When running interactively, the extension:
+
+1. checks the local time immediately on session startup;
+2. checks again every 30 seconds;
+3. automatically reminds during `00:00` inclusive through `06:00` exclusive;
+4. emits at most one automatic reminder per local calendar date in the current
+   extension session; and
+5. stops its timer when the Pi session shuts down.
+
+Noninteractive modes do not create the automatic timer or send the automatic
+notification.
+
+## 11. Testing
+
+Run the automated test suite with:
+
+```bash
+npm test
+```
+
+Run the TypeScript type checker with:
+
+```bash
+npm run typecheck
+```
+
+The tests use supplied/simulated time and fake timers. They do not change the
+machine's clock and do not wait for real midnight.
+
+The automated tests cover:
+
+- the `00:00` inclusive and `06:00` exclusive window boundaries;
+- behavior before midnight and during the late-night window;
+- once-per-local-date deduplication;
+- eligibility again on the next local date;
+- startup checks during the reminder window;
+- simulated crossing of midnight while Pi remains open;
+- repeated timer checks without duplicate reminders;
+- timer cleanup;
+- behavior outside the reminder window; and
+- suppression of automatic timers and notifications in noninteractive mode.
+
+## 12. Demo
+
+The required behavior can be demonstrated without changing the system clock.
+
+First, launch the extension and use `/bedtime-test` to demonstrate the visible
+manual preview.
+
+Then run:
+
+```bash
+npm test
+```
+
+The fake-clock and fake-timer tests demonstrate the automatic path, including a
+simulated transition from `23:59:30` to `00:00:00`. The first timer check after
+midnight produces one reminder, while a later check on the same local date does
+not produce a duplicate.
+
+The test suite also demonstrates startup behavior during the late-night window,
+timer cleanup, and suppression of automatic behavior in noninteractive mode.
