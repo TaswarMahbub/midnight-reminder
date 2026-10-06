@@ -22,7 +22,9 @@ describe("shouldRemind", () => {
 
   it("reminds at 05:59 when not reminded today", () => {
     const now = new Date(2026, 9, 5, 5, 59);
-
+  it("reminds at 05:59:59", () => {
+    const now= new Date(2026,9,5,5,59,59);
+    
     expect(shouldRemind(now, undefined)).toBe(true);
   });
 
