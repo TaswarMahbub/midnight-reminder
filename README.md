@@ -165,10 +165,7 @@ Install the project dependencies:
 
 ```bash
 npm install
-npm test
-npm run typecheck
 ```
-
 
 ## 10. Running the Extension
 
