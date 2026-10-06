@@ -7,11 +7,9 @@ describe("Pi extension integration", () => {
 
     try {
       const handlers = new Map<string, Function>();
-      const notify = vi.fn();
 
       const pi = {
         registerCommand: vi.fn(),
-
         on: vi.fn((event: string, handler: Function) => {
           handlers.set(event, handler);
           return () => {};
@@ -21,21 +19,23 @@ describe("Pi extension integration", () => {
       midnightReminder(pi as any);
 
       const sessionStart = handlers.get("session_start");
-
       expect(sessionStart).toBeDefined();
 
-      sessionStart?.(
+      const notify = vi.fn();
+
+      const ctx = {
+        mode: "print",
+        ui: {
+          notify,
+        },
+      };
+
+      sessionStart!(
         {
           type: "session_start",
           reason: "startup",
         },
-        {
-          mode: "print",
-          hasUI: false,
-          ui: {
-            notify,
-          },
-        }
+        ctx
       );
 
       expect(notify).not.toHaveBeenCalled();
@@ -44,17 +44,20 @@ describe("Pi extension integration", () => {
       vi.useRealTimers();
     }
   });
-  it ("registers a session_start handler", ()=> {
-    const handlers= new Map<string, Function>();"
 
-    const pi= {
+  it("registers a session_start handler", () => {
+    const handlers = new Map<string, Function>();
+
+    const pi = {
       registerCommand: vi.fn(),
-      on: vi.fn((event:string, handler: Function) => {
-        handlers.set(event,handler);
-        return ()=> {};
+      on: vi.fn((event: string, handler: Function) => {
+        handlers.set(event, handler);
+        return () => {};
       }),
     };
-    midnightReminder( pi as any);
+
+    midnightReminder(pi as any);
+
     expect(handlers.get("session_start")).toBeDefined();
   });
 });
