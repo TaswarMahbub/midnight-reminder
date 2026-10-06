@@ -44,4 +44,17 @@ describe("Pi extension integration", () => {
       vi.useRealTimers();
     }
   });
+  it ("registers a session_start handler", ()=> {
+    const handlers= new Map<string, Function>();"
+
+    const pi= {
+      registerCommand: vi.fn(),
+      on: vi.fn((event:string, handler: Function) => {
+        handlers.set(event,handler);
+        return ()=> {};
+      }),
+    };
+    midnightReminder( pi as any);
+    expect(handlers.get("session_start")).toBeDefined();
+  });
 });
