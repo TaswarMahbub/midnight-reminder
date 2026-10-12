@@ -1,7 +1,7 @@
 export type AskUserInput = {
   question: string;
   reason: string;
-  options: string[];
+  options?: string[];
   recommendation?: string;
 };
 export type AskUserResult=
