@@ -4,7 +4,7 @@ import{askUser} from "./ask-user.js";
 describe("askUser",()=> {
   it("returns the human answer", async()=>{
     const input={
-      question: "Which color should we use?"
+      question: "Which color should we use?",
       reason:"The user has not chosen a color.",
       options:["Blue","Green"]
   };
