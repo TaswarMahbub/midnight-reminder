@@ -27,7 +27,7 @@ it ("returns unanswered when the user cancels", async()=>{
   expect (result).toEqual({
     status: "unanswered",
     reason:"cancelled",
-  }));
+  });
   it ("returns unanswered when the UI is unavailable", async()=>{
     const input={
       question:"Which color should we use?",
