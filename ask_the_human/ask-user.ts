@@ -45,7 +45,7 @@ export async function askUser(
 ): Promise<AskUserResult> {
   try {
     const answer = await getAnswer(input);
-    if (answer === undefined) {
+    if (answer === undefined || answer.trim().length === 0) {
       return unansweredResult("cancelled");
     }
     return answeredResult(answer);

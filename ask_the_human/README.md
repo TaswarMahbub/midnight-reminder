@@ -26,7 +26,7 @@ The worker and reviewer had separate responsibilities, which helped me identify 
 Running the Extension
 From the project directory, run:
 npm install
-pi --extension./ask_the_human/index.ts
+pi --extension ./ask_the_human/index.ts
 Then ask Pi to ask_user for an important decision.
 
 Testing

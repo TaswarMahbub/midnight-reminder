@@ -28,7 +28,25 @@ export default function askTheHuman(pi: ExtensionAPI) {
         if (!input.options || input.options.length === 0) {
           return await ctx.ui.input(prompt, undefined, { signal });
         }
-        return await ctx.ui.select(prompt, input.options, { signal });
+        const customOption = "Other (type your answer)";
+        const options = [...input.options];
+
+        // Avoid duplicating the custom option if it already exists.
+        if (!options.includes(customOption)) {
+          options.push(customOption);
+        }
+
+        const selection = await ctx.ui.select(prompt, options, { signal });
+
+        if (selection === customOption) {
+          return await ctx.ui.input(
+            "Enter your custom answer:",
+            undefined,
+            { signal }
+          );
+        }
+
+        return selection;
       });
 
       return {

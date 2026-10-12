@@ -18,6 +18,23 @@ describe("askUser", () => {
     });
   });
 
+  it.each(["", "   "])(
+    "returns unanswered for an empty or whitespace-only response: %j",
+    async (answer) => {
+      const input = {
+        question: "What should we do?",
+        reason: "A human decision is required.",
+      };
+
+      const result = await askUser(input, async () => answer);
+
+      expect(result).toEqual({
+        status: "unanswered",
+        reason: "cancelled",
+      });
+    }
+  );
+
   it("returns unanswered when the user cancels", async () => {
     const input = {
       question: "Which color should we use?",
