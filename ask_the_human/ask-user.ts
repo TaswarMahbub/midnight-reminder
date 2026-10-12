@@ -41,7 +41,7 @@ export async function askUser(
     }
     return answeredResult(answer);
   }catch{
-    return unansweredResukt("unavailable");
+    return unansweredResult("unavailable");
   }
 }
 
